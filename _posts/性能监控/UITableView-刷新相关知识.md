@@ -76,22 +76,25 @@ UITableView 刷新相关知识
 - 通过可视区域得出需要被复用的 `Cell`，并且调用 `dataSource` 的 `CellForRow`
 - 遍历通知 `Cell` 进行 `layout`
 - `Cell` 自身以递归的形式通知 `子View` 进行 layout（如果为脏）
-layoutBelowIfNeeded
 
-UIView 实现了 CALayer 的 CALayerDelegate。
+调用堆栈
 
-    - (void)layoutSublayersOfLayer:(CALayer *)layer;
+    -[CALayer layoutSublayers] ()
 
-猜测每个 View 记录着一个通过 frame 等属性计算一个 hash 值————用于表示上一次 layout 以后的结果。
+    CA::Layer::layout_if_needed(CA::Transaction*) ()
 
-当一个 View 被通知需要被更新了，它先调用自身的 layoutSublayersOfLayer。
-猜测layoutSublayersOfLayer 内部调用了 View 的 layoutSubviews。
-layoutSubviews 的过程中把需要被更新的 View 记录下来（）
+    -[UIView(Hierarchy) layoutBelowIfNeeded] ()
 
+    +[UIView(Animation) performWithoutAnimation:] ()
 
-- 遍历子 View ，要求子 View 计算当前 hash 值
-- 如果 hash 值变了，调用该子 View 的 layoutSublayersOfLayer
-- 如果
+    -[UITableView _createPreparedCellForGlobalRow:withIndexPath:willDisplay:] ()
+
+    -[UITableView _createPreparedCellForGlobalRow:willDisplay:] ()
+
+    -[UITableView _updateVisibleCellsNow:isRecursive:] ()
+
+    -[UITableView layoutSubviews] ()
+
 
 ### CA::Transaction::commit()
 

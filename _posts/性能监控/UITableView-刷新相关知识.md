@@ -21,10 +21,10 @@ UITableView 刷新相关知识
 
 ### TableView 布局的内部实现
 因为`UIKit`内部实现不可见，但是我们能够通过苹果相关文档的描述和调用栈的顺序猜测出内部大概的实现
-<!-- more --> 
+<!-- more --> 
 **布局的入口**
-
-苹果在 `runloop` 加了三个 `observer`
+
+苹果在 `runloop` 加了三个 `observer`
 
 - _beforeCACommitHandler
 - _afterCACommitHandler
@@ -45,15 +45,15 @@ UITableView 刷新相关知识
         }
     }
 
-`CA::Layer::layout_if_needed` 的阶段收集了需要被 `layout` 的 `layer`
-遍历这个数组通知布局消息。这时这个数组里面就包含了 tableView
+`CA::Layer::layout_if_needed` 的阶段收集了需要被 `layout` 的 `layer`
+遍历这个数组通知布局消息。这时这个数组里面就包含了 tableView
 
 ---
 
 综上所述故事大概是这样的：
 
 - 滑动的时候 `TableView` 的 `offset` 被修改了，导致自身被标记为脏
-- `CA::Transaction::commit()` 时候发现 `TableView` 需要被更新
+- `CA::Transaction::commit()` 时候发现 `TableView` 需要被更新
 - `TableView` 的 `layoutSubLayers` 方法中被调用
 
 **UIView:layoutSubLayers**
@@ -70,10 +70,10 @@ UITableView 刷新相关知识
 
 另一篇文章[UIView layoutSublayersOfLayer:](http://www.jft0m.com/2017/11/25/UIView-CALayerDelegate-layoutSublayersOfLayer/)猜测了一下内部可能的实现
 
-**UITableView:layoutSubviews **
-
+**UITableView:layoutSubviews **
+
 - 计算可视区域
-- 通过可视区域得出需要被复用的 `Cell`，并且调用 `dataSource` 的 `CellForRow`
+- 通过可视区域得出需要被复用的 `Cell`，并且调用 `dataSource` 的 `CellForRow`
 - 遍历通知 `Cell` 进行 `layout`
 - `Cell` 自身以递归的形式通知 `子View` 进行 layout（如果为脏）
 
@@ -98,9 +98,9 @@ UITableView 刷新相关知识
 
 ### CA::Transaction::commit()
 
-Transaction commit 有四个阶段
+Transaction commit 有四个阶段
 - **layout（布局）：** 在这个阶段，程序设置 View / Layer 的层级信息，设置 layer 的属性，如 frame，background color 等等。[UIView layoutSubViews]和[CALayer layoutSublayers] 就是在这个阶段调用的。
-- **Dispaly（画）：** 在这个阶段程序会创建 layer 的 backing image，无论是通过 setContents 将一个 image 传給 layer，还是通过 drawRect: 或 drawLayer: inContext: 来画出来的。所以 drawRect: 等函数是在这个阶段被调用的
+- **Dispaly（画）：** 在这个阶段程序会创建 layer 的 backing image，无论是通过 setContents 将一个 image 传給 layer，还是通过 drawRect: 或 drawLayer: inContext: 来画出来的。所以 drawRect: 等函数是在这个阶段被调用的
 1. **Prepare（准备）：** 准备Prepare：在这个阶段，Core Animation 框架准备要渲染的 layer 的各种属性数据，以及要做的动画的参数，准备传递給 render server。同时在这个阶段也会解压要渲染的 image。
 1. **Commit（提交）：** 提交Commit：在这个阶段，Core Animation 打包 layer 的信息以及需要做的动画的参数，通过 IPC（inter-Process Communication）传递給 render server。这是一个递归操作，根据打包的Layer层级复杂度来决定递归的次数。大量连续递归的CA::Layer::commit_if_needed调用是这个阶段的显著特征。
 
@@ -128,7 +128,7 @@ _ZN2CA11Transaction17observer_callbackEP19__CFRunLoopObservermPv()。这个函�
     };
 
 翻译一下：    
-0xa0 = 10100000 表示 Core Animation 监听了 kCFRunLoopBeforeWaiting 和 kCFRunLoopExit  两个事件。
+0xa0 = 10100000 表示 Core Animation 监听了 kCFRunLoopBeforeWaiting 和 kCFRunLoopExit  两个事件。
 
 - order = 1999000 调用 _afterCACommitHandler
 - order = 2000000 调用 _ZN2CA11Transaction17observer_callbackEP19__CFRunLoopObservermPv
@@ -140,7 +140,7 @@ _afterCACommitHandler 大致做了两件事情
 2. _cleanUpAfterCAFlushAndRunDeferredBlocks
 
 
-第二个就不是特别清楚了，其中一种调用堆栈如下
+第二个就不是特别清楚了，其中一种调用堆栈如下
 
     _cleanUpAfterCAFlushAndRunDeferredBlocks
     _runAfterCACommitDeferredBlocks
@@ -156,7 +156,7 @@ _afterCACommitHandler 大致做了两件事情
 
 **CA::Transaction::observer_callback(__CFRunLoopObserver*, unsigned long, void*)**
 
-调用堆栈和_afterCACommitHandler很像
+调用堆栈和_afterCACommitHandler很像
 当滑动的 tableView 都时候会通过这个回调触发界面更新
 
 

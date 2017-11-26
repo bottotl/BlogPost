@@ -27,7 +27,7 @@ category: 性能监控
     didEnterLayoutSublayersOfLayerForView:
 
 3.1 跑一个循环
-给每个 view 的 layoutEngine 、delegate、_hostsLayoutEngine 赋值
+给每个 view 的 layoutEngine 、delegate、_hostsLayoutEngine 赋值
 
     for UIView._imminentLayoutSubviewsCount {
         layoutEngine = ？
@@ -35,7 +35,7 @@ category: 性能监控
         hostsLayoutEngine = ？
     }
 
-3.2 通知 `vc` 和 `navigationer` 一些不知道干什么（我们不关心）的事情
+3.2 通知 `vc` 和 `navigationer` 一些不知道干什么（我们不关心）的事情
 
     // ==== vc
     _viewControllerToNotifyOnLayoutSubviews
@@ -63,7 +63,7 @@ category: 性能监控
 
     _wantsReapplicationOfAutoLayoutWithLayoutDirtyOnEntry
     _updateConstraintsAsNecessaryAndApplyLayoutFromEngine
-4.4 更新 SafeArea
+4.4 更新 SafeArea
     _updateSafeAreaInsets
 
 ## 5.结束布局前
@@ -87,7 +87,7 @@ vc 的 embeddedDelegate 调用 viewControllerViewDidLayoutSubviews
     - (void)viewControllerViewWillLayoutSubviews:(id)arg1;
     @end
 
-5.2 AutoLayout 相关逻辑
+5.2 AutoLayout 相关逻辑
 
     _wantsReapplicationOfAutoLayoutWithLayoutDirtyOnEntry:
     _updateConstraintsAsNecessaryAndApplyLayoutFromEngine

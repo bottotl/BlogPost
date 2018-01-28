@@ -6,7 +6,7 @@ tags:
 
 环境依赖：zsh 
 
-##编辑 .zshrc
+## 编辑 .zshrc
 
 加入如下行
 
@@ -22,9 +22,9 @@ tags:
 
 	}
 
-##重新激活 zsh
+## 重新激活 zsh
 	source .zshrc
 
-##使用
+## 使用
 
 pod install 结束以后命令后执行 xc 自动打开 xcode 文件

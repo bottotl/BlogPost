@@ -14,4 +14,4 @@ keyWindow 之上还有一个 window。
 ## 解决方案
 大小修改为 CGRectInset([UIScreen mainScreen].bounds, 0, 1) 就不会影响 prefersHomeIndicatorAutoHidden 生效。
 
-因为 prefersHomeIndicatorAutoHidden 的实现原理不明，解决方案有效性待观察。
+因为 prefersHomeIndicatorAutoHidden 的实现原理不明，解决方案有效性待观察。

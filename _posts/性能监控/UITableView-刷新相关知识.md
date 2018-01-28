@@ -99,7 +99,7 @@ UITableView 刷新相关知识
 ### CA::Transaction::commit()
 
 Transaction commit 有四个阶段
-- **layout（布局）：** 在这个阶段，程序设置 View / Layer 的层级信息，设置 layer 的属性，如 frame，background color 等等。[UIView layoutSubViews]和[CALayer layoutSublayers] 就是在这个阶段调用的。
+- **layout（布局）：** 在这个阶段，程序设置 View / Layer 的层级信息，设置 layer 的属性，如 frame，background color 等等。[UIView layoutSubViews]和[CALayer layoutSublayers] 就是在这个阶段调用的。
 - **Dispaly（画）：** 在这个阶段程序会创建 layer 的 backing image，无论是通过 setContents 将一个 image 传給 layer，还是通过 drawRect: 或 drawLayer: inContext: 来画出来的。所以 drawRect: 等函数是在这个阶段被调用的
 1. **Prepare（准备）：** 准备Prepare：在这个阶段，Core Animation 框架准备要渲染的 layer 的各种属性数据，以及要做的动画的参数，准备传递給 render server。同时在这个阶段也会解压要渲染的 image。
 1. **Commit（提交）：** 提交Commit：在这个阶段，Core Animation 打包 layer 的信息以及需要做的动画的参数，通过 IPC（inter-Process Communication）传递給 render server。这是一个递归操作，根据打包的Layer层级复杂度来决定递归的次数。大量连续递归的CA::Layer::commit_if_needed调用是这个阶段的显著特征。

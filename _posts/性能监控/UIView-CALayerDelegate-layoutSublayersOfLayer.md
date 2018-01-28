@@ -22,7 +22,7 @@ category: 性能监控
 
     _UIViewLayoutFeedbackLoopDebugger layoutFeedbackLoopDebugger
 
-## 3.正式开始前的准备
+## 3.正式开始前的准备
 
     didEnterLayoutSublayersOfLayerForView:
 
